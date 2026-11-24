@@ -28,6 +28,3 @@ Thumbs.db
 
 # Rapport PDF non publié (contient un nom en page de garde)
 bank-account-microservice-springboot/Rapport_Activite_Pratique_1.pdf
-
-# Captures d'écran des README (locales uniquement)
-screenshots/
