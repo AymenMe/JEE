@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
@@ -11,12 +11,12 @@ import { Router } from '@angular/router';
 export class CustomersComponent implements OnInit {
   customers: any;
 
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(private cdr: ChangeDetectorRef, private http: HttpClient, private router: Router) { }
 
   ngOnInit(): void {
     this.http.get('http://localhost:8888/customers')
       .subscribe({
-        next: (data) => { this.customers = data; },
+        next: (data) => { this.customers = data; this.cdr.markForCheck(); },
         error: (err) => { console.error(err); }
       });
   }

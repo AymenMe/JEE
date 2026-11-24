@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 
@@ -12,14 +12,14 @@ export class BillDetailsComponent implements OnInit {
   billDetails: any;
   billId!: number;
 
-  constructor(private http: HttpClient, private route: ActivatedRoute) {
+  constructor(private cdr: ChangeDetectorRef, private http: HttpClient, private route: ActivatedRoute) {
     this.billId = route.snapshot.params['billId'];
   }
 
   ngOnInit(): void {
     this.http.get('http://localhost:8888/fullBill/' + this.billId)
       .subscribe({
-        next: (data) => { this.billDetails = data; },
+        next: (data) => { this.billDetails = data; this.cdr.markForCheck(); },
         error: (err) => { console.error(err); }
       });
   }
