@@ -1,59 +1,130 @@
-# EmsiApp
+# Activité Pratique N°3 — Application Angular
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.30.
+## Objectif
 
-## Development server
+Prendre en main Angular en construisant une petite application à deux pages : une page d'accueil et une page de gestion de produits. L'activité couvre les composants autonomes (standalone), le routage, les services injectables et la nouvelle syntaxe de contrôle des templates (`@if`, `@for`).
 
-To start a local development server, run:
+## Technologies
 
-```bash
-ng serve
+- Angular 21 (composants standalone)
+- TypeScript
+- Bootstrap 5 et Bootstrap Icons
+- Vitest pour les tests unitaires
+
+## Structure du projet
+
+```
+src/app
+├── app.ts / app.html      Composant racine : barre de navigation + <router-outlet>
+├── app.routes.ts          Définition des routes
+├── app.config.ts          Configuration de l'application (router)
+├── home/                  Composant Home
+├── products/              Composant Products (tableau des produits)
+└── services/product.ts    Service Product (données et suppression)
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Lancer le projet
 
 ```bash
-ng generate component component-name
+npm install
+npm start
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+L'application est accessible sur `http://localhost:4200/`. Elle n'a besoin d'aucun backend : les produits sont stockés en mémoire dans le service.
+
+## Routage
+
+```ts
+export const routes: Routes = [
+  { path: '', redirectTo: 'home', pathMatch: 'full' },
+  { path: 'home', component: Home },
+  { path: 'prods', component: Products }
+];
+```
+
+La racine `/` redirige vers `/home`. Les deux boutons de la barre de navigation utilisent `routerLink` : le changement de page se fait sans rechargement du navigateur.
+
+## Captures d'écran
+
+La barre de navigation contient deux entrées, `Home` et `Products`. Chacune est présentée ci-dessous.
+
+### Home
+
+`http://localhost:4200/home`
+
+Page d'accueil, affichée par défaut. Elle contient uniquement le titre du composant `Home`.
+
+![Page Home](screenshots/01-home.png)
+
+### Products
+
+`http://localhost:4200/prods`
+
+Tableau des produits fournis par le service `Product` : identifiant, nom, prix, et un indicateur `Selected` (icône verte cochée si le produit est sélectionné, cercle gris sinon). Chaque ligne a un bouton de suppression.
+
+![Page Products](screenshots/02-products.png)
+
+### Products — suppression d'un produit
+
+Un clic sur le bouton corbeille ouvre une demande de confirmation (`confirm`). Après validation, le composant appelle `deleteProduct` sur le service puis recharge la liste. Ici le produit `Computer` a été supprimé.
+
+![Page Products après suppression d'un produit](screenshots/03-products-apres-suppression.png)
+
+### Products — liste vide
+
+Quand tous les produits ont été supprimés, le bloc `@else` du template affiche le message « No products left. » à la place des lignes.
+
+![Page Products sans produit](screenshots/04-products-liste-vide.png)
+
+## Points techniques
+
+### Service injectable
+
+Les données sont dans un service déclaré avec `providedIn: 'root'`, donc partagé par toute l'application :
+
+```ts
+@Injectable({ providedIn: 'root' })
+export class Product {
+  private products: ProductItem[] = [
+    { id: 1, name: 'Computer', price: 2300, selected: true },
+    { id: 2, name: 'Printer', price: 1200, selected: false },
+    { id: 3, name: 'Smart Phone', price: 1100, selected: true }
+  ];
+
+  getAllProducts(): ProductItem[] { return this.products; }
+
+  deleteProduct(product: ProductItem): void {
+    this.products = this.products.filter((p) => p.id !== product.id);
+  }
+}
+```
+
+Comme la liste vit en mémoire, les produits supprimés reviennent quand on recharge la page.
+
+### Syntaxe de contrôle des templates
+
+Le tableau utilise `@for` avec `track p.id` pour parcourir les produits, et `@if` / `@else` pour choisir l'icône et pour gérer la liste vide :
+
+```html
+@for (p of products; track p.id) {
+  <tr>
+    <td>{{ p.id }}</td>
+    <td>{{ p.name }}</td>
+    <td>{{ p.price }}</td>
+    <td>
+      @if (p.selected) {
+        <i class="bi bi-check-circle text-success"></i>
+      } @else {
+        <i class="bi bi-circle text-secondary"></i>
+      }
+    </td>
+  </tr>
+}
+```
+
+## Autres commandes
 
 ```bash
-ng generate --help
+npm run build   # build de production dans dist/
+npm test        # tests unitaires
 ```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
