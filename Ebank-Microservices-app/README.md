@@ -84,7 +84,7 @@ Sans ces variables, `ebank-bot` ne démarre pas ; le reste de l'application fonc
 
 ## Captures d'écran
 
-Les captures ci-dessous ont été prises sur l'application en cours d'exécution, sans le bot.
+Les captures ci-dessous ont été prises sur l'application en cours d'exécution.
 
 ### 1. Annuaire Eureka
 
@@ -118,7 +118,7 @@ Liste des comptes bancaires. Le composant appelle `http://localhost:9999/EBANK-S
 
 `http://localhost:4200/bot`
 
-Interface de discussion avec l'agent IA : un champ de saisie et un bouton d'envoi. La réponse arrive en flux (`/EBANK-BOT/chatStream`) et s'affiche au fur et à mesure, formatée en Markdown. La capture montre l'interface seule : le bot n'était pas démarré, faute de clé OpenAI.
+Interface de discussion avec l'agent IA : un champ de saisie et un bouton d'envoi. La réponse arrive en flux (`/EBANK-BOT/chatStream`) et s'affiche au fur et à mesure, formatée en Markdown. Dans la capture, l'agent répond à la question « Quels sont les comptes du client Rim ? » en interrogeant les outils MCP des deux services.
 
 ![Page ChatBot](screenshots/03-front-chatbot.png)
 
